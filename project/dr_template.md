@@ -1,21 +1,40 @@
 # Infrastructure
 
 ## AWS Zones
-Identify your zones here
+Identify your AWS zones here:
+- Zone 1: US-EAST-2
+- Zone 2: US-WEST-1
 
 ## Servers and Clusters
 
-### Table 1.1 Summary
-| Asset      | Purpose           | Size                                                                   | Qty                                                             | DR                                                                                                           |
-|------------|-------------------|------------------------------------------------------------------------|-----------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| Asset name | Brief description | AWS size eg. t3.micro (if applicable, not all assets will have a size) | Number of nodes/replicas or just how many of a particular asset | Identify if this asset is deployed to DR, replicated, created in multiple locations or just stored elsewhere |
+### Table 1.1: Summary
+| Asset             | Purpose               | Size        | Qty   | DR                                                      |
+|-------------------|-----------------------|-------------|-------|---------------------------------------------------------|
+| VPC               | Virtual Network       | -           | 2     | 2 zones, 1 VPC each zone for DR purposes                 |
+| EC2 instances     | Application Servers   | t3.micro    | 6     | 2 zones, 3 instances each zone for DR purposes           |
+| EC2 keypair       | SSH key for access to EC2 | -         | 2     | 1 keypair each zone for EC2 instance access             |
+| EKS               | Kubernetes Clusters   | t3.medium   | 4     | 2 zones, 2 nodes each zone for DR purposes               |
+| Prometheus Grafana| Monitoring System     | -           | 2     | 2 zones, 2 nodes each zone for DR purposes               |
+| S3 bucket         | Bucket for Terraform  | -           | 2     | 2 zones, 1 bucket each zone for DR purposes              |
+| ALB               | Application Load Balancer | -        | 2     | For High Availability (HA) and DR purposes              |
+| RDS               | Backend Database      | db.t3.micro | 2     | 1 cluster with 2 nodes in Zone 1                        |
+| RDS               | Backend Database      | db.t3.micro | 2     | 1 replicated cluster with 2 nodes in Zone 2 (replicated from Zone 1) |
 
-### Descriptions
-More detailed descriptions of each asset identified above.
+### Descriptions:
+- VPC: Virtual Private Cloud (VPC) - networking for the cloud infra.
+- EC2 instances: VMs those running the application.
+- EC2 keypair: SSH key for secure access to EC2.
+- EKS: Kubernetes clusters for deploying Prometheus and Grafana.
+- Prometheus Grafana: Monitoring stack.
+- S3 bucket: Store Terraform state files.
+- ALB: Application Load Balancer used for distributing traffic.
+- RDS: Relational Database Service (RDS) clusters for storing application data.
 
 ## DR Plan
-### Pre-Steps:
-List steps you would perform to setup the infrastructure in the other region. It doesn't have to be super detailed, but high-level should suffice.
 
-## Steps:
-You won't actually perform these steps, but write out what you would do to "fail-over" your application and database cluster to the other region. Think about all the pieces that were setup and how you would use those in the other region
+### Pre-Steps:
+- Ensure that the disaster recovery (DR) site is correctly set up and working normally.
+
+### Steps:
+1. Database: Promote the replicated RDS cluster at the DR site.
+2. Traffic: Reroute traffic to the DR site.
