@@ -44,7 +44,7 @@ resource "aws_rds_cluster" "udacity_cluster" {
   db_subnet_group_name     = aws_db_subnet_group.udacity_db_subnet_group.name
   engine                   = "aurora-mysql"
   engine_mode              = "provisioned"
-  engine_version           = "5.7.mysql_aurora.2.11.1" 
+  engine_version           = "5.7.mysql_aurora.2.11.2" 
   skip_final_snapshot      = true
   storage_encrypted        = false
   backup_retention_period         = 5
@@ -70,7 +70,7 @@ resource "aws_rds_cluster_instance" "udacity_instance" {
 
 resource "aws_security_group" "db_sg_1" {
   name   = "udacity-db-sg"
-  vpc_id =  var.vpc_id
+  vpc_id = var.vpc_id
 
   ingress {
     from_port   = 3306
